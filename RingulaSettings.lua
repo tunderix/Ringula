@@ -1,0 +1,1 @@
+-- All the settings dialogs and support for keybinding

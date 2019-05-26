@@ -1,0 +1,2 @@
+BINDING_HEADER_RINGULA = "Ringula"
+BINDING_NAME_RINGULA_TOGGLE = "Open / Close Ringula"

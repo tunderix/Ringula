@@ -1,0 +1,31 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+<Script File="Ringula.lua"/>
+    <Frame name="RingulaFrame" parent="UIParent">
+        <Size><AbsDimension x="300" y="300" /></Size>
+        <Anchors>
+            <Anchor point="CENTER" relativePoint="CENTER" />
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <!-- File needs to be done in png AND tga. I think TGA is the format. -->
+                <Texture name="RingulaTextureShadow" file="Interface\AddOns\Ringula\RingulaBackground">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" />
+                        <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                RingulaFrame_OnLoad()
+            </OnLoad>
+            <OnEvent>
+                RingulaFrame_OnEvent(event)
+            </OnEvent>
+            <OnUpdate>
+                RingulaFrame_OnUpdate(arg1)
+            </OnUpdate>
+        </Scripts>
+    </Frame>
+</Ui> 
