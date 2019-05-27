@@ -1,6 +1,12 @@
 local isOpen = false
 
 
+currentX = -1.0
+currentY = -1.0
+targetX = -1.0
+targetY = -1.0
+
+
 Ringula_settings =
 {
 
@@ -47,16 +53,20 @@ end
 
 function CloseRingu_Menu()
     local mouseX, mouseY = Ringula_GetMousePosition()
-    -- RingMenu_targetSize = 0.0
-    -- RingMenu_targetX = mouseX
-    -- RingMenu_targetY = mouseY
+    
+    targetX = mouseX
+    targetY = mouseY
     RingMenu_isOpen = false
 end
 
 function OpenRingu_Menu ()
+    local mouseX, mouseY = Ringula_GetMousePosition()
+    targetX = mouseX
+    targetY = mouseY
+    isOpen = true
+    RingulaFrame:Show()
 
 end
-
 
 function Ringula_GetMousePosition()
     local mouseX, mouseY = GetCursorPosition()
@@ -64,12 +74,33 @@ function Ringula_GetMousePosition()
     mouseX = mouseX / uiScale
     mouseY = mouseY / uiScale
     return mouseX, mouseY
-end
+    end
 
 function ConfigureButtons ()
 
     for i = 1, Ringula_settings.NumButtonCount do
+        local buttonName = "Nappula" .. i
+        local button = getglobal(buttonName) 
+        if not button then 
+            button = CreateFrame("CheckButton", buttonName, RingulaFrame, "BonusActionButtonTemplate")
+            -- Hide Hotkey text
+            local hotkey = getglobal(buttonName .. "HotKey")
+            hotkey:Hide()
+            -- Hook individual button callbacks
+            button.oldScriptOnClick = button:GetScript("OnClick")
+            button:SetScript("OnClick", RingulaOnClick)
+            button.oldScriptOnEnter = button:GetScript("OnEnter")
+            button:SetScript("OnEnter", RingulaOnEnter)
+        end
         
     end
+
+end
+
+function RingulaOnClick ()
+    
+end
+
+function RingulaOnEnter()
 
 end
