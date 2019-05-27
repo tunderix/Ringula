@@ -38,9 +38,9 @@ end
 function ToggleRingu_Menu()
 
     if isOpen then 
-        -- Close
+        CloseRingu_Menu()  
     else
-        -- Open
+        OpenRingu_Menu ()
     end
 
 end
