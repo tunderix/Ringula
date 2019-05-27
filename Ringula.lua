@@ -1,22 +1,16 @@
 local isOpen = false
 
-
 currentX = -1.0
 currentY = -1.0
 targetX = -1.0
 targetY = -1.0
 
-
 Ringula_settings =
 {
-
     NumButtonCount = 8, 
     StartPage = 13,
 
 }
-
-
-
 
 function RingulaFrame_OnLoad()
 
@@ -91,16 +85,42 @@ function ConfigureButtons ()
             button:SetScript("OnClick", RingulaOnClick)
             button.oldScriptOnEnter = button:GetScript("OnEnter")
             button:SetScript("OnEnter", RingulaOnEnter)
+            
         end
-        
+        button:SetID(i)
+        button:SetPoint(:"CENTER", RingMenuFrame, "CENTER", 0, 0)
+        button:SetFrameLevel(2)
+        button.isRingula = true
+        button.isBonus = true
+        button.buttonType = "RINGULA_MENU" --to do: Varmista, mihin tämä liittyy :D--
+       
+        local icon = getglobal(buttonName .. "Icon")
+        icon:SetTextCoord (0.0, 1.0, 0.0, 1.0) 
+        button:Enable()
+        button:Show()
+
+        this = button
+       -- ActionButton_Update() 
+
     end
 
 end
 
 function RingulaOnClick ()
-    
+
+    this:oldScriptOnClick()
+    if IsShiftKeyDown() or CursorHasSpell() or CursorHasItem() then
+        -- User is just changing button slots, keep RingMenu open
+    else
+        -- Clicked a button, close RingMenu
+        CloseRingu_Menu()
+    end
+   
 end
 
 function RingulaOnEnter()
-
+    if isOpen then
+        this:oldScriptOnEnter()
+    end
 end
+
