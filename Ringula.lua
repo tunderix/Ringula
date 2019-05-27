@@ -1,17 +1,17 @@
 local isOpen = false
 
-currentX = -1.0
-currentY = -1.0
-targetX = -1.0
-targetY = -1.0
+local currentX = -1.0
+local currentY = -1.0
+local targetX = -1.0
+local targetY = -1.0
 
-Ringula_defaultSettings = {
+local Ringula_defaultSettings = {
     NumButtonCount = 8, 
     StartPage = 13,
 }
 
 -- Settings (saved variables)
-Ringula_settings = {}
+local Ringula_settings = {}
 
 function Ringula_ResetDefaultSettings()
     Ringula_settings = {}
@@ -20,7 +20,15 @@ function Ringula_ResetDefaultSettings()
     end
 end
 
-
+function Ringula_LoadNewDefaultSettings()
+    -- Only updates fields that are not present in the current settings dictionary.
+    -- Used for initializing new settings with sensible initial values after a version update.
+    for k, v in pairs(Ringula_defaultSettings) do
+        if Ringula_settings[k] == nil then
+            Ringula_settings[k] = v
+        end
+    end
+end
 
 function RingulaFrame_OnLoad()
     Ringula_ResetDefaultSettings()
@@ -34,6 +42,7 @@ end
 function RingulaFrame_OnEvent(event)
 
     if event == "VARIABLES_LOADED" then
+        Ringula_LoadNewDefaultSettings()
         ConfigureButtons()
     end
 
@@ -110,8 +119,8 @@ function ConfigureButtons ()
         button.isBonus = true
         button.buttonType = "RINGULA_MENU" --to do: Varmista, mihin tämä liittyy :D--
        
-        local icon = getglobal(buttonName .. "Icon")
-        icon:SetTextCoord (0.0, 1.0, 0.0, 1.0) 
+        -- local icon = getglobal(buttonName .. "Icon")
+        -- icon:SetTextCoord (0.0, 1.0, 0.0, 1.0) 
         button:Enable()
         button:Show()
 
