@@ -1,3 +1,21 @@
+function RingulaFrame_OnLoad()
 
--- Ringula implementation!
---Moi--
+
+
+end
+
+
+
+function RingulaFrame_OnEvent(event)
+
+
+
+end
+
+
+
+function RingulaFrame_OnUpdate(arg1)
+
+
+
+end
