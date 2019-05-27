@@ -23,17 +23,23 @@ end
 
 function RingulaFrame_OnEvent(event)
 
-    if event == "VARIABLES_LOADED"
-    ConfigureButtons()
+    if event == "VARIABLES_LOADED" then
+        ConfigureButtons()
     end
 
 end
 
 
 
-function RingulaFrame_OnUpdate(arg1)
-
+function RingulaFrame_OnUpdate(elapsed)
+    RingMenu_UpdateButtonPositions()
 end
+
+function RingMenu_UpdateButtonPositions()
+    -- Ring position
+    RingMenuFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", currentX, currentY)
+end
+
 
 function ToggleRingu_Menu()
 
@@ -68,7 +74,7 @@ function Ringula_GetMousePosition()
     mouseX = mouseX / uiScale
     mouseY = mouseY / uiScale
     return mouseX, mouseY
-    end
+end
 
 function ConfigureButtons ()
 
