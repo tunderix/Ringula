@@ -5,15 +5,25 @@ currentY = -1.0
 targetX = -1.0
 targetY = -1.0
 
-Ringula_settings =
-{
+Ringula_defaultSettings = {
     NumButtonCount = 8, 
     StartPage = 13,
-
 }
 
-function RingulaFrame_OnLoad()
+-- Settings (saved variables)
+Ringula_settings = {}
 
+function Ringula_ResetDefaultSettings()
+    Ringula_settings = {}
+    for k, v in pairs(Ringula_defaultSettings) do
+        Ringula_settings[k] = v
+    end
+end
+
+
+
+function RingulaFrame_OnLoad()
+    Ringula_ResetDefaultSettings()
     CloseRingu_Menu()
     this:RegisterEvent("VARIABLES_LOADED")
 
@@ -32,12 +42,12 @@ end
 
 
 function RingulaFrame_OnUpdate(elapsed)
-    RingMenu_UpdateButtonPositions()
+    Ringula_UpdateButtonPositions()
 end
 
-function RingMenu_UpdateButtonPositions()
+function Ringula_UpdateButtonPositions()
     -- Ring position
-    RingMenuFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", currentX, currentY)
+    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", currentX, currentY)
 end
 
 
@@ -70,7 +80,7 @@ end
 
 function Ringula_GetMousePosition()
     local mouseX, mouseY = GetCursorPosition()
-    local uiScale = RingMenuFrame:GetParent():GetEffectiveScale()
+    local uiScale = RingulaFrame:GetParent():GetEffectiveScale()
     mouseX = mouseX / uiScale
     mouseY = mouseY / uiScale
     return mouseX, mouseY
@@ -94,7 +104,7 @@ function ConfigureButtons ()
             
         end
         button:SetID(i)
-        button:SetPoint(:"CENTER", RingMenuFrame, "CENTER", 0, 0)
+        button:SetPoint("CENTER", RingulaFrame, "CENTER", 0, 0)
         button:SetFrameLevel(2)
         button.isRingula = true
         button.isBonus = true
