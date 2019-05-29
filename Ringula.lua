@@ -17,9 +17,8 @@ SLASH_RINGULA3 = "/gula"
 SLASH_RINGULA4 = "/rinkula"
 SLASH_RINGULA5 = "/rinki"
 SlashCmdList["RINGULA"] = function(msg)
-   print("Ringula menu needs to popup.")
    -- Show Settings for Ringula. file: RingulaSettings.lua
-   RingMenuSettingsFrame:Show()
+   RingulaSettingsFrame:Show()
 end 
 
 

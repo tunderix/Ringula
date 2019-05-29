@@ -18,11 +18,69 @@ function CreateSettingsFrame(config)
     frame:SetMovable(true)
     frame:EnableMouse(true)
 
+    --TITLE COMPONENTS
+    local titleTexture = CreateTitleTexture(config.name, frame)
+    local titleFrame = CreateTitleText(config.name, frame, titleTexture, config.title)
+    local titleHandle = CreateTitleHandle(config.name, frame)
+     
+    
+    -- ROW generation
+    local framePadding = 24.0
+    local rowWidth = frameWidth - 2 * framePadding
+    local currentY = framePadding + 18
+
+    -- Creation of BUTTONS
+    local numButtons = table.getn(config.buttons)
+    local buttonPadding = 8
+    local buttonWidth = (rowWidth - (numButtons - 1) * buttonPadding) / numButtons
+    local buttonHeight = 18
+    
+    for i, buttonConf in ipairs(config.buttons) do
+        local button = CreateFrame("Button", config.name .. "Button" .. buttonConf.name, frame, "UIPanelButtonTemplate")
+        local xOffset = (i - 1) * (buttonWidth + buttonPadding)
+        button:SetPoint("LEFT", frame, "TOPLEFT", framePadding + xOffset, -currentY)
+        button:SetWidth(buttonWidth)
+        button:SetHeight(buttonHeight)
+        button:SetText(buttonConf.text)
+        button:SetScript("OnClick", buttonConf.func)
+    end
+
     frame:SetScript("OnShow", config.showFunc)
     return frame
 end
 
-function RingMenuSettings_SetupSettingsFrame()
+-- Create title components
+
+function CreateTitleText(name, parentFrame, titleTexture, title)
+    local titleFrame = parentFrame:CreateFontString(name .. "TitleText", "ARTWORK", "GameFontNormal")
+    titleFrame:SetText(title)
+    titleFrame:SetPoint("TOP", titleTexture, "TOP", 0, -14)
+    return titleFrame
+end
+
+function CreateTitleTexture(name, parentFrame)
+    local titleTexture = parentFrame:CreateTexture(name .. "TitleTexture", "ARTWORK")
+    titleTexture:SetTexture("Interface/DialogFrame/UI-DialogBox-Header")
+    titleTexture:SetWidth(280)
+    titleTexture:SetHeight(64)
+    titleTexture:SetPoint("TOP", parentFrame, "TOP", 0, 12)
+    return titleTexture
+end
+
+function CreateTitleHandle(name, parentFrame)
+    local titleHandle = CreateFrame("Button", name .. "TitleHandle", parentFrame)
+    titleHandle:SetWidth(280 - 2 * 64)
+    titleHandle:SetHeight(64 - 2 * 14)
+    titleHandle:SetPoint("TOP", parentFrame, "TOP", 0, 12)
+    titleHandle:EnableMouse(true)
+    titleHandle:RegisterForClicks("LeftButtonDown", "LeftButtonUp")
+    titleHandle:SetScript("OnMouseDown", RingulaSettings_StartDragging)
+    titleHandle:SetScript("OnMouseUp", RingulaSettings_StopDragging)
+    return titleHandle
+end
+
+
+function RingulaSettings_SetupSettingsFrame()
     local settingsFrameConfig = {
         name = "RingulaSettingsFrame",
         title = "Ringula Settings",
@@ -79,4 +137,21 @@ function RS_Reset()
     RingMenu_ResetDefaultSettings()
     RingMenuSettings_UpdateAllWidgets()
     ConfigureButtons()
+end
+
+
+--
+-- Settings DRAGGING actions.
+--
+
+function RingulaSettings_StartDragging()
+    if arg1 == "LeftButton" then
+        RingulaSettingsFrame:StartMoving()
+    end
+end
+
+function RingulaSettings_StopDragging()
+    if arg1 == "LeftButton" then
+        RingulaSettingsFrame:StopMovingOrSizing()
+    end
 end
