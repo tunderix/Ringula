@@ -6,7 +6,7 @@ function CreateSettingsFrame(config)
     local frame = CreateFrame("Frame", config.name, UIParent)
     local frameWidth = 360.0
     frame:SetWidth(frameWidth)
-    frame:SetHeight(240)
+    frame:SetHeight(200)
     frame:SetPoint("CENTER", UIParent, "CENTER")
     frame:SetBackdrop({
         bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 

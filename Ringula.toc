@@ -2,7 +2,7 @@
 ## Title: Ringula
 ## Author: Ionisaatio
 ## Version: 0.1.0
-## SavedVariablesPerCharacter: Ringula_settings
+## SavedVariablesPerCharacter: RingulaSettings
 RingulaSettingTemplates.xml
 RingulaSettings.lua
 Ringula.lua

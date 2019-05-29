@@ -23,12 +23,12 @@ end
 
 
 -- Settings (saved variables)
-local Ringula_settings = {}
+local RingulaSettings = {}
 
 function Ringula_ResetDefaultSettings()
-    Ringula_settings = {}
+    RingulaSettings = {}
     for k, v in pairs(Ringula_defaultSettings) do
-        Ringula_settings[k] = v
+        RingulaSettings[k] = v
     end
 end
 
@@ -36,8 +36,8 @@ function Ringula_LoadNewDefaultSettings()
     -- Only updates fields that are not present in the current settings dictionary.
     -- Used for initializing new settings with sensible initial values after a version update.
     for k, v in pairs(Ringula_defaultSettings) do
-        if Ringula_settings[k] == nil then
-            Ringula_settings[k] = v
+        if RingulaSettings[k] == nil then
+            RingulaSettings[k] = v
         end
     end
 end
@@ -55,7 +55,7 @@ function RingulaFrame_OnEvent(event)
 
     if event == "VARIABLES_LOADED" then
         Ringula_LoadNewDefaultSettings()
-        ConfigureButtons()
+        CreateRingulaFrame()
 
         -- Setup Settings for Ringula. file: RingulaSettings.lua
         RingulaSettings_SetupSettingsFrame()
@@ -67,26 +67,45 @@ end
 
 function RingulaFrame_OnUpdate(elapsed)
     Ringula_UpdateButtonPositions()
+    if (not isOpen) then 
+        RingulaFrame:Hide() 
+    end
 end
 
 function Ringula_UpdateButtonPositions()
 
+    local radius = 100.0 --TODO Change these into default_settings
+    local angleOffset = 6
+    local angleOffsetRadians = angleOffset / 180.0 * math.pi
+    local currentSize = 1
+
+     -- Button positions
+     
     
-    local colorR = 0.0 --TODO Change these into default_settings
+         for i = 1, RingulaSettings.NumButtonCount do
+         local buttonName = "Nappula" .. i
+         local button = getglobal(buttonName) 
+         local angle = angleOffsetRadians + 2.0 * math.pi * (i - 1) / RingulaSettings.NumButtonCount
+         local buttonX = radius * math.sin(angle)
+         local buttonY = radius * math.cos(angle)
+         button:SetPoint("CENTER", RingMenuFrame, "CENTER", buttonX, buttonY)
+         button:SetAlpha(200)
+     end
+
+    local colorR = 10.0 --TODO Change these into default_settings
     local colorG = 0.0 --TODO Change these into default_settings
     local colorB = 0.0 --TODO Change these into default_settings
     local colorAlpha = 0.5 --TODO Change these into default_settings
-    local RingMenu_currentSize = 0.0 --TODO Change these into default_settings
-    local backdropAlpha = RingMenu_currentSize * colorAlpha
+    local backdropAlpha = currentSize * colorAlpha
     RingulaTextureShadow:SetVertexColor(colorR,colorG,colorB, backdropAlpha);
 
-    local radius = 100.0 --TODO Change these into default_settings
+
     local backdropScale = 1.5 --TODO Change these into default_settings
-    local size = RingMenu_currentSize * 2 * radius * backdropScale
+    local size = currentSize * 2 * radius * backdropScale
     RingulaFrame:SetWidth(size)
     RingulaFrame:SetHeight(size)
     -- Ring position
-    RingulaFrame:SetPoint("CENTER", "UIParent", "CENTER", currentX, currentY)
+    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", targetX, targetY)
 end
 
 
@@ -107,7 +126,7 @@ function CloseRingu_Menu()
     targetY = mouseY
     isOpen = false
     
-    message("closing rinkula")
+    
 end
 
 function OpenRingu_Menu ()
@@ -118,7 +137,7 @@ function OpenRingu_Menu ()
     
     RingulaFrame:Show()
 
-    message("opening rinkula")
+    
 end
 
 function Ringula_GetMousePosition()
@@ -129,9 +148,10 @@ function Ringula_GetMousePosition()
     return mouseX, mouseY
 end
 
-function ConfigureButtons ()
+function CreateRingulaFrame ()
 
-    for i = 1, Ringula_settings.NumButtonCount do
+
+    for i = 1, RingulaSettings.NumButtonCount do
         local buttonName = "Nappula" .. i
         local button = getglobal(buttonName) 
         if not button then 
@@ -161,6 +181,7 @@ function ConfigureButtons ()
         this = button
        -- ActionButton_Update() 
 
+
     end
 
 end
@@ -183,3 +204,5 @@ function RingulaOnEnter()
     end
 end
 
+
+   
