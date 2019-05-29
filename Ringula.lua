@@ -105,7 +105,9 @@ function CloseRingu_Menu()
     
     targetX = mouseX
     targetY = mouseY
-    RingMenu_isOpen = false
+    isOpen = false
+    
+    message("closing rinkula")
 end
 
 function OpenRingu_Menu ()
@@ -113,8 +115,10 @@ function OpenRingu_Menu ()
     targetX = mouseX
     targetY = mouseY
     isOpen = true
+    
     RingulaFrame:Show()
 
+    message("opening rinkula")
 end
 
 function Ringula_GetMousePosition()
