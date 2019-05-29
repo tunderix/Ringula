@@ -60,7 +60,7 @@ function Ringula_UpdateButtonPositions()
 end
 
 
-function ToggleRingu_Menu()
+function Toggle_Ringula()
 
     if isOpen then 
         CloseRingu_Menu()  
