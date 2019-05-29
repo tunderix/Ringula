@@ -10,6 +10,18 @@ local Ringula_defaultSettings = {
     StartPage = 13,
 }
 
+-- Add delegations to Settings Menu in here
+SLASH_RINGULA1 = "/ringula"
+SLASH_RINGULA2 = "/ring"
+SLASH_RINGULA3 = "/gula"
+SLASH_RINGULA4 = "/rinkula"
+SLASH_RINGULA5 = "/rinki"
+SlashCmdList["RINGULA"] = function(msg)
+   -- Show Settings for Ringula. file: RingulaSettings.lua
+   RingulaSettingsFrame:Show()
+end 
+
+
 -- Settings (saved variables)
 local Ringula_settings = {}
 
@@ -44,6 +56,9 @@ function RingulaFrame_OnEvent(event)
     if event == "VARIABLES_LOADED" then
         Ringula_LoadNewDefaultSettings()
         ConfigureButtons()
+
+        -- Setup Settings for Ringula. file: RingulaSettings.lua
+        RingulaSettings_SetupSettingsFrame()
     end
 
 end
@@ -60,7 +75,7 @@ function Ringula_UpdateButtonPositions()
 end
 
 
-function ToggleRingu_Menu()
+function Toggle_Ringula()
 
     if isOpen then 
         CloseRingu_Menu()  

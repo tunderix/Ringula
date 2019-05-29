@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="RINGULA_TOGGLE" header="RINGULA">
+		Toggle_Ringula()
+	</Binding>
+</Bindings>
