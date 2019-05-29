@@ -8,7 +8,7 @@
         <Layers>
             <Layer level="BACKGROUND">
                 <!-- File needs to be done in png AND tga. I think TGA is the format. -->
-                <Texture name="RingulaTextureShadow" file="Interface\AddOns\Ringula\RingulaBackground">
+                <Texture name="RingulaTextureShadow" file="Interface\AddOns\Ringula\RinkulaBackdrop">
                     <Anchors>
                         <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" />
                         <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" />

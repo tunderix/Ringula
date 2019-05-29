@@ -70,8 +70,23 @@ function RingulaFrame_OnUpdate(elapsed)
 end
 
 function Ringula_UpdateButtonPositions()
+
+    
+    local colorR = 0.0 --TODO Change these into default_settings
+    local colorG = 0.0 --TODO Change these into default_settings
+    local colorB = 0.0 --TODO Change these into default_settings
+    local colorAlpha = 0.5 --TODO Change these into default_settings
+    local RingMenu_currentSize = 0.0 --TODO Change these into default_settings
+    local backdropAlpha = RingMenu_currentSize * colorAlpha
+    RingulaTextureShadow:SetVertexColor(colorR,colorG,colorB, backdropAlpha);
+
+    local radius = 100.0 --TODO Change these into default_settings
+    local backdropScale = 1.5 --TODO Change these into default_settings
+    local size = RingMenu_currentSize * 2 * radius * backdropScale
+    RingulaFrame:SetWidth(size)
+    RingulaFrame:SetHeight(size)
     -- Ring position
-    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", currentX, currentY)
+    RingulaFrame:SetPoint("CENTER", "UIParent", "CENTER", currentX, currentY)
 end
 
 
