@@ -104,7 +104,7 @@ function CreateRingulaFrame ()
         this = button
        -- ActionButton_Update() 
 
-       message("Button " .. buttonName .. "position is: " )
+       --message("Button " .. buttonName .. "position is: " )
 
     end
 
