@@ -10,8 +10,8 @@ local frameDimensions = {
 
 local rowDimensions = {
     padding = 8,
-    height = 18,
-    splitHorizontal = 80
+    height = 22,
+    splitHorizontal = 100
 }
 
 local buttonDimensions = {
@@ -45,10 +45,15 @@ local function create_slider(row, frame, rowPosY, width)
     widget:SetScript("OnValueChanged", row.updateFunc)
 end
 
+local function create_colorpicker(row, frame, rowPosY, width)
+    
+end
+
+
 -- ROW Label Creation
-local function createLabel(i, row, frame, rowPosY)
+local function createLabel(row, frame, rowPosY)
     local label = frame:CreateFontString(row.name .. "Label" .. row.name, "ARTWORK", "GameFontNormal")
-    label:SetText(row.text .. i)
+    label:SetText(row.text)
     label:SetPoint("LEFT", frame, "TOPLEFT", frameDimensions.paddingLeft, rowPosY)
     label:SetWidth(rowDimensions.splitHorizontal - frameDimensions.paddingLeft)
     label:SetJustifyH("LEFT")
@@ -60,7 +65,7 @@ function createRowFrom(i, row, frame)
     rowPosY = -frameDimensions.paddingTop - i*rowDimensions.height
     componentWidth = (totalRowWidth - rowDimensions.splitHorizontal) - frameDimensions.paddingRight
 
-    createLabel(i, row, frame, rowPosY)
+    createLabel(row, frame, rowPosY)
     row.createFunc(row, frame, rowPosY, componentWidth)
 
 end
@@ -163,9 +168,9 @@ function RingulaSettings_SetupSettingsFrame()
         showFunc = RingulaSettings_OnShow,
         rows = {
             { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
-            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
-            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
-            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
+            { name = "Angle", text = "Angle", createFunc = create_slider, min = 0, max = 360, labelSuffix = "°", valueStep = 1, updateFunc = RingulaAngleOnUpdate },
+            { name = "NumButtons", text = "Number of Buttons", createFunc = create_slider, min = 1, max = 24, valueStep = 1, updateFunc = RingulaButtonCountOnUpdate },
+            { name = "BackgroundColor", text = "Background Color", createFunc = create_colorpicker, updateFunc = RingulaColorOnUpdate }
         },
         buttons = {
             { name = "Okay", text = "Okay", func = RS_CloseOkay },
@@ -239,8 +244,17 @@ end
 --
 
 function RingulaRadiusOnUpdate()
-    --local slider = getglobal("RingMenuSettingsFrameWidgetRadius")
-    --RingMenu_settings.radius = slider:GetValue()
-    --RingMenuSettings_UpdateSliderLabels()
-    --RingMenu_UpdateButtonPositions()
+    
+end
+
+function RingulaAngleOnUpdate()
+
+end
+
+function RingulaButtonCountOnUpdate()
+
+end
+
+function RingulaColorOnUpdate()
+
 end
