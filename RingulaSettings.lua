@@ -1,6 +1,8 @@
 local frameDimensions = {
     inset = 12,
     paddingTop = 36,
+    paddingLeft = 16,
+    paddingRight = 16,
     paddingBot = 24,
     width = 360,
     height = 200
@@ -8,7 +10,8 @@ local frameDimensions = {
 
 local rowDimensions = {
     padding = 8,
-    height = 18
+    height = 18,
+    splitHorizontal = 80
 }
 
 local buttonDimensions = {
@@ -23,44 +26,43 @@ local function buttonPositionX(i, buttonCount, buttonWidth)
     return posX
 end
 
-function createRowFrom(row, frame)
-
-    -- ROW generation
-    local framePadding = 24.0
-    local rowPadding = 16.0
-    local rowWidth = frameWidth - 2 * framePadding
-    local columnPadding = 16.0
-    local labelColumnX = framePadding
-    local labelColumnWidth = 120.0
-    local widgetColumnX = labelColumnX + labelColumnWidth + columnPadding
-    local widgetColumnWidth = rowWidth - labelColumnWidth - columnPadding
-    local currentY = framePadding + 18
-
-    local label = frame:CreateFontString(config.name .. "Label" .. row.name, "ARTWORK", "GameFontNormal")
-    label:SetText(row.text)
-    label:SetPoint("LEFT", frame, "TOPLEFT", labelColumnX, -currentY)
-    currentY = currentY + label:GetHeight() + rowPadding
-    label:SetWidth(rowWidth)
-    label:SetJustifyH("LEFT")
-    
-    if row.widget == "slider" then
-        local widget = CreateFrame("Slider", config.name .. "Widget" .. row.name, frame, "OptionsSliderTemplate")
-        widget:SetPoint("LEFT", frame, "TOPLEFT", widgetColumnX, -currentY + 27)
-        widget:SetWidth(widgetColumnWidth)
-        widget:SetHeight(17)
-        widget:SetMinMaxValues(row.min, row.max)
-        widget:SetValue(50)
-        widget:SetValueStep(row.valueStep)
-        local lowLabel = row.min
-        local highLabel = row.max
-        if row.labelSuffix then
-            lowLabel = lowLabel .. row.labelSuffix
-            highLabel = highLabel .. row.labelSuffix
-        end
-        getglobal(widget:GetName().."Low"):SetText(lowLabel)
-        getglobal(widget:GetName().."High"):SetText(highLabel)
-        widget:SetScript("OnValueChanged", row.updateFunc)
+local function create_slider(row, frame, rowPosY, width)
+    local widget = CreateFrame("Slider", row.name .. "Widget" .. row.name, frame, "OptionsSliderTemplate")
+    widget:SetPoint("LEFT", frame, "TOPLEFT", rowDimensions.splitHorizontal, rowPosY)
+    widget:SetWidth(width)
+    widget:SetHeight(17)
+    widget:SetMinMaxValues(row.min, row.max)
+    widget:SetValue((row.max - row.min) / 2)
+    widget:SetValueStep(row.valueStep)
+    local lowLabel = row.min
+    local highLabel = row.max
+    if row.labelSuffix then
+        lowLabel = lowLabel .. row.labelSuffix
+        highLabel = highLabel .. row.labelSuffix
     end
+    getglobal(widget:GetName().."Low"):SetText(lowLabel)
+    getglobal(widget:GetName().."High"):SetText(highLabel)
+    widget:SetScript("OnValueChanged", row.updateFunc)
+end
+
+-- ROW Label Creation
+local function createLabel(i, row, frame, rowPosY)
+    local label = frame:CreateFontString(row.name .. "Label" .. row.name, "ARTWORK", "GameFontNormal")
+    label:SetText(row.text .. i)
+    label:SetPoint("LEFT", frame, "TOPLEFT", frameDimensions.paddingLeft, rowPosY)
+    label:SetWidth(rowDimensions.splitHorizontal - frameDimensions.paddingLeft)
+    label:SetJustifyH("LEFT")
+end
+
+-- ROW generation
+function createRowFrom(i, row, frame)
+    totalRowWidth = frameDimensions.width - frameDimensions.paddingLeft - frameDimensions.paddingRight
+    rowPosY = -frameDimensions.paddingTop - i*rowDimensions.height
+    componentWidth = (totalRowWidth - rowDimensions.splitHorizontal) - frameDimensions.paddingRight
+
+    createLabel(i, row, frame, rowPosY)
+    row.createFunc(row, frame, rowPosY, componentWidth)
+
 end
 
 function createButtonRow(frame, config)
@@ -86,7 +88,7 @@ end
 function CreateSettingsFrameContents(config, frame)
     
     for i, row in ipairs(config.rows) do
-        --createRowFrom(row, frame)
+        createRowFrom(i, row, frame)
     end
 
     createButtonRow(frame, config)
@@ -160,7 +162,10 @@ function RingulaSettings_SetupSettingsFrame()
         title = "Ringula Settings",
         showFunc = RingulaSettings_OnShow,
         rows = {
-            { name = "Radius", text = "Radius", widget = "slider", min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
+            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
+            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
+            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
+            { name = "Radius", text = "Radius", createFunc = create_slider, min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingulaRadiusOnUpdate },
         },
         buttons = {
             { name = "Okay", text = "Okay", func = RS_CloseOkay },
