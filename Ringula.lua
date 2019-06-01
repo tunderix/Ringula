@@ -8,6 +8,10 @@ local targetY = -1.0
 local Ringula_defaultSettings = {
     NumButtonCount = 8, 
     StartPage = 13,
+    colorR = 0.0,
+    colorG = 0.0,
+    colorB = 0.0,
+    colorAlpha = 0.5
 }
 
 -- Add delegations to Settings Menu in here

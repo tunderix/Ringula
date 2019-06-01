@@ -3,7 +3,7 @@
 ## Author: Ionisaatio
 ## Version: 0.1.0
 ## SavedVariablesPerCharacter: RingulaSettings
-RingulaSettingTemplates.xml
+RingulaColorPicker.xml
 RingulaSettings.lua
 Ringula.lua
 Ringula.xml

@@ -46,7 +46,9 @@ local function create_slider(row, frame, rowPosY, width)
 end
 
 local function create_colorpicker(row, frame, rowPosY, width)
-    
+    local widget = CreateFrame("Button", row.name .. "Widget" .. row.name, frame, "RingulaColorPickerTemplate")
+    widget:SetPoint("LEFT", frame, "TOPLEFT", rowDimensions.splitHorizontal, rowPosY)
+    widget.updateFunc = row.updateFunc
 end
 
 
@@ -195,11 +197,14 @@ end
 -- 
 
 function RingulaSettings_UpdateAllWidgets()
-    
+    --RingulaSettings_UpdateColorWidget()
 end
 
-
-
+function RingulaSettings_UpdateColorWidget()
+    local colorSwatch = getglobal("RingulaSettingsColorWidgetBackground")
+    colorSwatch:SetVertexColor(RingulaSettings.colorR, RingulaSettings.colorG, RingulaSettings.colorB)
+    colorSwatch:SetAlpha(RingulaSettings.colorAlpha)
+end
 
 --
 -- Settings Button ACTIONS
@@ -218,9 +223,36 @@ end
 
 function RS_Reset()
     PlaySound("GAMEGENERICBUTTONPRESS", "master")
-    RingMenu_ResetDefaultSettings()
-    RingMenuSettings_UpdateAllWidgets()
+    Ringula_ResetDefaultSettings()
+    RingulaSettings_UpdateAllWidgets()
     ConfigureButtons()
+end
+
+function SettingsColorPicker_OpenColorPicker(button)
+    local swatchTexture = getglobal(button:GetName().."NormalTexture")
+    ColorPickerFrame.func = function()
+        swatchTexture:SetVertexColor(ColorPickerFrame:GetColorRGB())
+        button:updateFunc()
+    end
+    ColorPickerFrame.opacityFunc = function()
+        swatchTexture:SetAlpha(1.0 - OpacitySliderFrame:GetValue())
+        button:updateFunc()
+    end
+    ColorPickerFrame.cancelFunc = function(previousValues)
+        swatchTexture:SetVertexColor(previousValues.r, previousValues.g, previousValues.b)
+        swatchTexture:SetAlpha(1.0 - previousValues.opacity)
+        button:updateFunc()
+    end
+    
+    local currentR, currentG, currentB = swatchTexture:GetVertexColor()
+    local currentOpacity = 1.0 - swatchTexture:GetAlpha()
+    
+    ColorPickerFrame:SetColorRGB(currentR, currentG, currentB)
+    ColorPickerFrame.hasOpacity = true
+	ColorPickerFrame.opacity = currentOpacity
+	ColorPickerFrame.previousValues = {r = currentR, g = currentG, b = currentB, opacity = currentOpacity}
+    
+    ShowUIPanel(ColorPickerFrame)
 end
 
 --
@@ -256,5 +288,13 @@ function RingulaButtonCountOnUpdate()
 end
 
 function RingulaColorOnUpdate()
-
+    --[[ local colorSwatch = getglobal("RingulaSettingsColorWidgetBackground")
+    local r, g, b = colorSwatch:GetVertexColor()
+    local alpha = colorSwatch:GetAlpha()
+    
+    RingulaSettings.colorR = r
+    RingulaSettings.colorG = g
+    RingulaSettings.colorB = b
+    RingulaSettings.colorAlpha = alpha
+    RingMenu_UpdateButtonPositions() ]]
 end
