@@ -14,6 +14,17 @@ local Ringula_defaultSettings = {
     colorAlpha = 0.5
 }
 
+local ringulaSettingsTemplate = {
+    buttonCount = 0, 
+    startPage = 0,
+    colorProfile = { cR = 0.0, cG = 0.0, cB = 0.0, cA = 0.0 },
+    radius = 100.0,
+    animationSpeed = 0.0, --
+    transparency = 0.0, --Total transparency for whole bar and everything.
+    totalScale = 0.0, --Scale whole ringula. making the buttons smaller. 
+    autoClose = true --Automatically close when cursor goes far from origin.
+}  
+
 -- Add delegations to Settings Menu in here
 SLASH_RINGULA1 = "/ringula"
 SLASH_RINGULA2 = "/ring"
@@ -48,7 +59,7 @@ end
 
 function RingulaFrame_OnLoad()
     Ringula_ResetDefaultSettings()
-    CloseRingu_Menu()
+    CloseRingula()
     this:RegisterEvent("VARIABLES_LOADED")
 
 end
@@ -153,14 +164,14 @@ end
 function Toggle_Ringula()
 
     if isOpen then 
-        CloseRingu_Menu()  
+        CloseRingula()  
     else
-        OpenRingu_Menu ()
+        OpenRingula ()
     end
 
 end
 
-function CloseRingu_Menu()
+function CloseRingula()
     local mouseX, mouseY = Ringula_GetMousePosition()
     
     targetX = mouseX
@@ -170,7 +181,7 @@ function CloseRingu_Menu()
     
 end
 
-function OpenRingu_Menu ()
+function OpenRingula ()
     local mouseX, mouseY = Ringula_GetMousePosition()
     targetX = mouseX
     targetY = mouseY
@@ -197,7 +208,7 @@ function RingulaOnClick ()
         -- User is just changing button slots, keep RingMenu open
     else
         -- Clicked a button, close RingMenu
-        CloseRingu_Menu()
+        CloseRingula()
     end
    
 end
