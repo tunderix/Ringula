@@ -36,7 +36,6 @@ SlashCmdList["RINGULA"] = function(msg)
    RingulaSettingsFrame:Show()
 end 
 
-
 -- Settings (saved variables)
 local RingulaSettings = {}
 
@@ -59,12 +58,10 @@ end
 
 function RingulaFrame_OnLoad()
     Ringula_ResetDefaultSettings()
-    CloseRingula()
     this:RegisterEvent("VARIABLES_LOADED")
+  
 
 end
-
-
 
 function RingulaFrame_OnEvent(event)
 
@@ -77,17 +74,15 @@ function RingulaFrame_OnEvent(event)
 
 end
 
-
-
 function RingulaFrame_OnUpdate(elapsed)
-    Ringula_UpdateButtonPositions()
-    if (not isOpen) then 
-        RingulaFrame:Hide() 
-    end
+if (not isOpen) then
+RingulaFrame:Hide()
+end
+Ringula_UpdateButtonPositions()
+
 end
 
 function CreateRingulaFrame ()
-
 
     for i = 1, 8 do
         local buttonName = "Nappula" .. i
@@ -111,19 +106,25 @@ function CreateRingulaFrame ()
         button.isBonus = true
         button.buttonType = "RINGULA_MENU" --to do: Varmista, mihin tämä liittyy :D--
        
-        -- local icon = getglobal(buttonName .. "Icon")
-        -- icon:SetTextCoord (0.0, 1.0, 0.0, 1.0) 
         button:Enable()
         button:Show()
 
         this = button
-       -- ActionButton_Update() 
-
-       --message("Button " .. buttonName .. "position is: " )
+       
 
     end
 
     Ringula_UpdateButtonPositions()
+end
+
+local function UpdateButton(buttonid, angleOffsetRadians, buttonCount, radius)
+    local buttonName = "Nappula" .. buttonid
+    local button = getglobal(buttonName) 
+    local angle = angleOffsetRadians + 2.0 * math.pi * (buttonid - 1) / buttonCount
+    local buttonX = radius * math.sin(angle)
+    local buttonY = radius * math.cos(angle)
+    button:SetPoint("CENTER", RingulaFrame, "CENTER", buttonX, buttonY)
+    button:SetAlpha(200)   
 end
 
 function Ringula_UpdateButtonPositions()
@@ -135,13 +136,7 @@ function Ringula_UpdateButtonPositions()
 
      -- Button positions
      for i = 1, RingulaSettings.NumButtonCount do
-         local buttonName = "Nappula" .. i
-         local button = getglobal(buttonName) 
-         local angle = angleOffsetRadians + 2.0 * math.pi * (i - 1) / RingulaSettings.NumButtonCount
-         local buttonX = radius * math.sin(angle)
-         local buttonY = radius * math.cos(angle)
-         button:SetPoint("CENTER", RingulaFrame, "CENTER", buttonX, buttonY)
-         button:SetAlpha(200)
+       UpdateButton(i, angleOffsetRadians, RingulaSettings.NumButtonCount, radius) 
      end
 
     local colorR = 10.0 --TODO Change these into default_settings
@@ -160,25 +155,13 @@ function Ringula_UpdateButtonPositions()
     RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", targetX, targetY)
 end
 
-
-function Toggle_Ringula()
-
-    if isOpen then 
-        CloseRingula()  
-    else
-        OpenRingula ()
-    end
-
-end
-
 function CloseRingula()
     local mouseX, mouseY = Ringula_GetMousePosition()
     
     targetX = mouseX
     targetY = mouseY
     isOpen = false
-    
-    
+       
 end
 
 function OpenRingula ()
@@ -186,10 +169,8 @@ function OpenRingula ()
     targetX = mouseX
     targetY = mouseY
     isOpen = true
-    
-    RingulaFrame:Show()
+    RingulaFrame:Show() --This has to be done because of upkeep.
 
-    
 end
 
 function Ringula_GetMousePosition()
@@ -200,24 +181,14 @@ function Ringula_GetMousePosition()
     return mouseX, mouseY
 end
 
+--
+-- Bind on key down- and up
+--
+function RingulaKeyUp ()
+    CloseRingula()
 
-function RingulaOnClick ()
-
-    this:oldScriptOnClick()
-    if IsShiftKeyDown() or CursorHasSpell() or CursorHasItem() then
-        -- User is just changing button slots, keep RingMenu open
-    else
-        -- Clicked a button, close RingMenu
-        CloseRingula()
-    end
-   
 end
 
-function RingulaOnEnter()
-    if isOpen then
-        this:oldScriptOnEnter()
-    end
+function RingulaKeyDown()
+    OpenRingula()
 end
-
-
-   
