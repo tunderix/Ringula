@@ -1,9 +1,9 @@
 ## Interface: 11200
 ## Title: Ringula
 ## Author: Ionisaatio
-## Version: 0.1.3
-## SavedVariablesPerCharacter: Ringula_settings
-RingulaSettingTemplates.xml
+## Version: 0.1.4
+## SavedVariablesPerCharacter: RingulaSettings
+RingulaColorPicker.xml
 RingulaSettings.lua
 Ringula.lua
 Ringula.xml

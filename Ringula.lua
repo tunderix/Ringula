@@ -8,7 +8,22 @@ local targetY = -1.0
 local Ringula_defaultSettings = {
     NumButtonCount = 8, 
     StartPage = 13,
+    colorR = 0.0,
+    colorG = 0.0,
+    colorB = 0.0,
+    colorAlpha = 0.5
 }
+
+local ringulaSettingsTemplate = {
+    buttonCount = 0, 
+    startPage = 0,
+    colorProfile = { cR = 0.0, cG = 0.0, cB = 0.0, cA = 0.0 },
+    radius = 100.0,
+    animationSpeed = 0.0, --
+    transparency = 0.0, --Total transparency for whole bar and everything.
+    totalScale = 0.0, --Scale whole ringula. making the buttons smaller. 
+    autoClose = true --Automatically close when cursor goes far from origin.
+}  
 
 -- Add delegations to Settings Menu in here
 SLASH_RINGULA1 = "/ringula"
@@ -21,14 +36,13 @@ SlashCmdList["RINGULA"] = function(msg)
    RingulaSettingsFrame:Show()
 end 
 
-
 -- Settings (saved variables)
-local Ringula_settings = {}
+local RingulaSettings = {}
 
 function Ringula_ResetDefaultSettings()
-    Ringula_settings = {}
+    RingulaSettings = {}
     for k, v in pairs(Ringula_defaultSettings) do
-        Ringula_settings[k] = v
+        RingulaSettings[k] = v
     end
 end
 
@@ -36,83 +50,41 @@ function Ringula_LoadNewDefaultSettings()
     -- Only updates fields that are not present in the current settings dictionary.
     -- Used for initializing new settings with sensible initial values after a version update.
     for k, v in pairs(Ringula_defaultSettings) do
-        if Ringula_settings[k] == nil then
-            Ringula_settings[k] = v
+        if RingulaSettings[k] == nil then
+            RingulaSettings[k] = v
         end
     end
 end
 
 function RingulaFrame_OnLoad()
     Ringula_ResetDefaultSettings()
-    CloseRingu_Menu()
     this:RegisterEvent("VARIABLES_LOADED")
+  
 
 end
-
-
 
 function RingulaFrame_OnEvent(event)
 
     if event == "VARIABLES_LOADED" then
         Ringula_LoadNewDefaultSettings()
-        ConfigureButtons()
-
+        CreateRingulaFrame()
         -- Setup Settings for Ringula. file: RingulaSettings.lua
         RingulaSettings_SetupSettingsFrame()
     end
 
 end
 
-
-
 function RingulaFrame_OnUpdate(elapsed)
-    Ringula_UpdateButtonPositions()
+if (not isOpen) then
+RingulaFrame:Hide()
 end
-
-function Ringula_UpdateButtonPositions()
-    -- Ring position
-    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", currentX, currentY)
-end
-
-
-function Toggle_Ringula()
-
-    if isOpen then 
-        CloseRingu_Menu()  
-    else
-        OpenRingu_Menu ()
-    end
+Ringula_UpdateButtonPositions()
 
 end
 
-function CloseRingu_Menu()
-    local mouseX, mouseY = Ringula_GetMousePosition()
-    
-    targetX = mouseX
-    targetY = mouseY
-    RingMenu_isOpen = false
-end
+function CreateRingulaFrame ()
 
-function OpenRingu_Menu ()
-    local mouseX, mouseY = Ringula_GetMousePosition()
-    targetX = mouseX
-    targetY = mouseY
-    isOpen = true
-    RingulaFrame:Show()
-
-end
-
-function Ringula_GetMousePosition()
-    local mouseX, mouseY = GetCursorPosition()
-    local uiScale = RingulaFrame:GetParent():GetEffectiveScale()
-    mouseX = mouseX / uiScale
-    mouseY = mouseY / uiScale
-    return mouseX, mouseY
-end
-
-function ConfigureButtons ()
-
-    for i = 1, Ringula_settings.NumButtonCount do
+    for i = 1, 8 do
         local buttonName = "Nappula" .. i
         local button = getglobal(buttonName) 
         if not button then 
@@ -127,40 +99,96 @@ function ConfigureButtons ()
             button:SetScript("OnEnter", RingulaOnEnter)
             
         end
-        button:SetID(i)
+        button:SetID(1020 + i) -- TODO : WHAT ID...May conflict with other addons.
         button:SetPoint("CENTER", RingulaFrame, "CENTER", 0, 0)
         button:SetFrameLevel(2)
         button.isRingula = true
         button.isBonus = true
         button.buttonType = "RINGULA_MENU" --to do: Varmista, mihin tämä liittyy :D--
        
-        -- local icon = getglobal(buttonName .. "Icon")
-        -- icon:SetTextCoord (0.0, 1.0, 0.0, 1.0) 
         button:Enable()
         button:Show()
 
         this = button
-       -- ActionButton_Update() 
+       
 
     end
 
+    Ringula_UpdateButtonPositions()
 end
 
-function RingulaOnClick ()
-
-    this:oldScriptOnClick()
-    if IsShiftKeyDown() or CursorHasSpell() or CursorHasItem() then
-        -- User is just changing button slots, keep RingMenu open
-    else
-        -- Clicked a button, close RingMenu
-        CloseRingu_Menu()
-    end
-   
+local function UpdateButton(buttonid, angleOffsetRadians, buttonCount, radius)
+    local buttonName = "Nappula" .. buttonid
+    local button = getglobal(buttonName) 
+    local angle = angleOffsetRadians + 2.0 * math.pi * (buttonid - 1) / buttonCount
+    local buttonX = radius * math.sin(angle)
+    local buttonY = radius * math.cos(angle)
+    button:SetPoint("CENTER", RingulaFrame, "CENTER", buttonX, buttonY)
+    button:SetAlpha(200)   
 end
 
-function RingulaOnEnter()
-    if isOpen then
-        this:oldScriptOnEnter()
-    end
+function Ringula_UpdateButtonPositions()
+
+    local radius = 100.0 --TODO Change these into default_settings
+    local angleOffset = 6
+    local angleOffsetRadians = angleOffset / 180.0 * math.pi
+    local currentSize = 1
+
+     -- Button positions
+     for i = 1, RingulaSettings.NumButtonCount do
+       UpdateButton(i, angleOffsetRadians, RingulaSettings.NumButtonCount, radius) 
+     end
+
+    local colorR = 10.0 --TODO Change these into default_settings
+    local colorG = 0.0 --TODO Change these into default_settings
+    local colorB = 0.0 --TODO Change these into default_settings
+    local colorAlpha = 0.5 --TODO Change these into default_settings
+    local backdropAlpha = currentSize * colorAlpha
+    RingulaTextureShadow:SetVertexColor(colorR,colorG,colorB, backdropAlpha);
+
+
+    local backdropScale = 1.5 --TODO Change these into default_settings
+    local size = currentSize * 2 * radius * backdropScale
+    RingulaFrame:SetWidth(size)
+    RingulaFrame:SetHeight(size)
+    -- Ring position
+    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", targetX, targetY)
 end
 
+function CloseRingula()
+    local mouseX, mouseY = Ringula_GetMousePosition()
+    
+    targetX = mouseX
+    targetY = mouseY
+    isOpen = false
+       
+end
+
+function OpenRingula ()
+    local mouseX, mouseY = Ringula_GetMousePosition()
+    targetX = mouseX
+    targetY = mouseY
+    isOpen = true
+    RingulaFrame:Show() --This has to be done because of upkeep.
+
+end
+
+function Ringula_GetMousePosition()
+    local mouseX, mouseY = GetCursorPosition()
+    local uiScale = RingulaFrame:GetParent():GetEffectiveScale()
+    mouseX = mouseX / uiScale
+    mouseY = mouseY / uiScale
+    return mouseX, mouseY
+end
+
+--
+-- Bind on key down- and up
+--
+function RingulaKeyUp ()
+    CloseRingula()
+
+end
+
+function RingulaKeyDown()
+    OpenRingula()
+end

@@ -1,5 +1,9 @@
 <Bindings>
-	<Binding name="RINGULA_TOGGLE" header="RINGULA">
-		Toggle_Ringula()
+	<Binding name="RINGULA_TOGGLE" header="RINGULA" runOnUp="true"> 
+		if (keystate == "down") then 
+			RingulaKeyDown ()
+		else
+			RingulaKeyUp ()
+		end
 	</Binding>
 </Bindings>
