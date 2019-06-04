@@ -1,9 +1,14 @@
 local isOpen = false
 
-local currentX = -1.0
-local currentY = -1.0
-local targetX = -1.0
-local targetY = -1.0
+local ringulaMouse_Current = {
+    X = -1.0,
+    Y = -1.0
+}
+
+local ringulaMouse_Target = {
+    X = -1.0,
+    Y = -1.0
+}
 
 local Ringula_defaultSettings = {
     NumButtonCount = 8, 
@@ -59,8 +64,6 @@ end
 function RingulaFrame_OnLoad()
     Ringula_ResetDefaultSettings()
     this:RegisterEvent("VARIABLES_LOADED")
-  
-
 end
 
 function RingulaFrame_OnEvent(event)
@@ -128,7 +131,6 @@ local function UpdateButton(buttonid, angleOffsetRadians, buttonCount, radius)
 end
 
 function Ringula_UpdateButtonPositions()
-
     local radius = 100.0 --TODO Change these into default_settings
     local angleOffset = 6
     local angleOffsetRadians = angleOffset / 180.0 * math.pi
@@ -146,31 +148,27 @@ function Ringula_UpdateButtonPositions()
     local backdropAlpha = currentSize * colorAlpha
     RingulaTextureShadow:SetVertexColor(colorR,colorG,colorB, backdropAlpha);
 
-
     local backdropScale = 1.5 --TODO Change these into default_settings
     local size = currentSize * 2 * radius * backdropScale
     RingulaFrame:SetWidth(size)
     RingulaFrame:SetHeight(size)
     -- Ring position
-    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", targetX, targetY)
+    RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", ringulaMouse_Target.X, ringulaMouse_Target.Y)
 end
 
 function CloseRingula()
     local mouseX, mouseY = Ringula_GetMousePosition()
-    
-    targetX = mouseX
-    targetY = mouseY
+    ringulaMouse_Target.X = mouseX
+    ringulaMouse_Target.Y = mouseY
     isOpen = false
-       
 end
 
 function OpenRingula ()
     local mouseX, mouseY = Ringula_GetMousePosition()
-    targetX = mouseX
-    targetY = mouseY
+    ringulaMouse_Target.X = mouseX
+    ringulaMouse_Target.Y = mouseY
     isOpen = true
     RingulaFrame:Show() --This has to be done because of upkeep.
-
 end
 
 function Ringula_GetMousePosition()
@@ -186,7 +184,6 @@ end
 --
 function RingulaKeyUp ()
     CloseRingula()
-
 end
 
 function RingulaKeyDown()
