@@ -202,8 +202,9 @@ end
 
 function RingulaSettings_UpdateColorWidget()
     local colorSwatch = getglobal("RingulaSettingsColorWidgetBackground")
-    colorSwatch:SetVertexColor(RingulaSettings.colorR, RingulaSettings.colorG, RingulaSettings.colorB)
-    colorSwatch:SetAlpha(RingulaSettings.colorAlpha)
+    local rColors = RingulaSettings.colorProfile
+    colorSwatch:SetVertexColor(rColors.cR, rColors.cG, rColors.cB)
+    colorSwatch:SetAlpha(rColors.cA)
 end
 
 --
@@ -292,9 +293,9 @@ function RingulaColorOnUpdate()
     local r, g, b = colorSwatch:GetVertexColor()
     local alpha = colorSwatch:GetAlpha()
     
-    RingulaSettings.colorR = r
-    RingulaSettings.colorG = g
-    RingulaSettings.colorB = b
-    RingulaSettings.colorAlpha = alpha
+    RingulaSettings.colorProfile.cR = r
+    RingulaSettings.colorProfile.cG = g
+    RingulaSettings.colorProfile.cB = b
+    RingulaSettings.colorProfile.cA = alpha
     RingMenu_UpdateButtonPositions() ]]
 end

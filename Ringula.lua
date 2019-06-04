@@ -11,24 +11,15 @@ local ringulaMouse_Target = {
 }
 
 local Ringula_defaultSettings = {
-    NumButtonCount = 8, 
-    StartPage = 13,
-    colorR = 0.0,
-    colorG = 0.0,
-    colorB = 0.0,
-    colorAlpha = 0.5
-}
-
-local ringulaSettingsTemplate = {
-    buttonCount = 0, --How many buttons? 
-    startPage = 0, --What index is the action page index? 
+    buttonCount = 8, --How many buttons? 
     colorProfile = { cR = 0.0, cG = 0.0, cB = 0.0, cA = 0.0 },--coloring info.
-    radius = 100.0, --How big the circle is.
-    animationSpeed = 0.0, --Animation speed for open/close. 
-    transparency = 0.0, --Total transparency for whole bar and everything.
-    totalScale = 0.0, --Scale whole ringula. making the buttons smaller. 
-    autoClose = true --Automatically close when cursor goes far from origin.
-}  
+    -- startPage = 13, --What index is the action page index? 
+    -- radius = 100.0, --How big the circle is.
+    -- animationSpeed = 0.0, --Animation speed for open/close. 
+    -- transparency = 0.0, --Total transparency for whole bar and everything.
+    -- totalScale = 0.0, --Scale whole ringula. making the buttons smaller. 
+    -- autoClose = true --Automatically close when cursor goes far from origin.
+}
 
 -- Add delegations to Settings Menu in here
 SLASH_RINGULA1 = "/ringula"
@@ -51,9 +42,9 @@ function Ringula_ResetDefaultSettings()
     end
 end
 
+-- Only updates fields that are not present in the current settings dictionary.
+-- Used for initializing new settings with sensible initial values after a version update.
 function Ringula_LoadNewDefaultSettings()
-    -- Only updates fields that are not present in the current settings dictionary.
-    -- Used for initializing new settings with sensible initial values after a version update.
     for k, v in pairs(Ringula_defaultSettings) do
         if RingulaSettings[k] == nil then
             RingulaSettings[k] = v
@@ -78,11 +69,12 @@ function RingulaFrame_OnEvent(event)
 end
 
 function RingulaFrame_OnUpdate(elapsed)
-if (not isOpen) then
-RingulaFrame:Hide()
-end
-Ringula_UpdateButtonPositions()
+    if (not isOpen) then
+        RingulaFrame:Hide()
+    end
 
+    -- Button position update always?
+    Ringula_UpdatePositions()
 end
 
 function CreateRingulaFrame ()
@@ -117,7 +109,7 @@ function CreateRingulaFrame ()
 
     end
 
-    Ringula_UpdateButtonPositions()
+    Ringula_UpdatePositions()
 end
 
 local function UpdateButton(buttonid, angleOffsetRadians, buttonCount, radius)
@@ -130,45 +122,36 @@ local function UpdateButton(buttonid, angleOffsetRadians, buttonCount, radius)
     button:SetAlpha(200)   
 end
 
-function Ringula_UpdateButtonPositions()
+-- Buttons are children of RingulaFrame(Main frame). 
+-- 1. update button positions inside ringula frame, radial?
+-- 2. update RingulaFrame position to where mouse is.
+function Ringula_UpdatePositions()
     local radius = 100.0 --TODO Change these into default_settings
+    Ringula_UpdateButtonPositions(radius)
+    UpdateRingulaFramePosition(radius)
+end
+
+local function Ringula_UpdateButtonPositions(radius)
     local angleOffset = 6
     local angleOffsetRadians = angleOffset / 180.0 * math.pi
-    local currentSize = 1
+    local btnCount = RingulaSettings.buttonCount
+    for i = 1, btnCount do
+      UpdateButton(i, angleOffsetRadians, btnCount, radius) 
+    end
+end
 
-     -- Button positions
-     for i = 1, RingulaSettings.NumButtonCount do
-       UpdateButton(i, angleOffsetRadians, RingulaSettings.NumButtonCount, radius) 
-     end
-
-    local colorR = 10.0 --TODO Change these into default_settings
-    local colorG = 0.0 --TODO Change these into default_settings
-    local colorB = 0.0 --TODO Change these into default_settings
-    local colorAlpha = 0.5 --TODO Change these into default_settings
-    local backdropAlpha = currentSize * colorAlpha
-    RingulaTextureShadow:SetVertexColor(colorR,colorG,colorB, backdropAlpha);
+local function UpdateRingulaFramePosition(radius)
+    local colors = RingulaSettings.colorProfile
+    local backdropAlpha = colors.cA
+    RingulaTextureShadow:SetVertexColor(colors.cR,colors.cG,colors.cB, backdropAlpha);
 
     local backdropScale = 1.5 --TODO Change these into default_settings
-    local size = currentSize * 2 * radius * backdropScale
+    local size = 2 * radius * backdropScale
+
+    -- Frame Positioning and Size.
     RingulaFrame:SetWidth(size)
     RingulaFrame:SetHeight(size)
-    -- Ring position
     RingulaFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", ringulaMouse_Target.X, ringulaMouse_Target.Y)
-end
-
-function CloseRingula()
-    local mouseX, mouseY = Ringula_GetMousePosition()
-    ringulaMouse_Target.X = mouseX
-    ringulaMouse_Target.Y = mouseY
-    isOpen = false
-end
-
-function OpenRingula ()
-    local mouseX, mouseY = Ringula_GetMousePosition()
-    ringulaMouse_Target.X = mouseX
-    ringulaMouse_Target.Y = mouseY
-    isOpen = true
-    RingulaFrame:Show() --This has to be done because of upkeep.
 end
 
 function Ringula_GetMousePosition()
@@ -177,6 +160,23 @@ function Ringula_GetMousePosition()
     mouseX = mouseX / uiScale
     mouseY = mouseY / uiScale
     return mouseX, mouseY
+end
+
+local function Ringula_SetTargetToMouse()
+    local mouseX, mouseY = Ringula_GetMousePosition()
+    ringulaMouse_Target.X = mouseX
+    ringulaMouse_Target.Y = mouseY
+end
+
+function CloseRingula()
+    Ringula_SetTargetToMouse()
+    isOpen = false
+end
+
+function OpenRingula ()
+    Ringula_SetTargetToMouse()
+    isOpen = true
+    RingulaFrame:Show() --This has to be done because of upkeep.
 end
 
 --
