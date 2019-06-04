@@ -15,11 +15,11 @@ local Ringula_defaultSettings = {
 }
 
 local ringulaSettingsTemplate = {
-    buttonCount = 0, 
-    startPage = 0,
-    colorProfile = { cR = 0.0, cG = 0.0, cB = 0.0, cA = 0.0 },
-    radius = 100.0,
-    animationSpeed = 0.0, --
+    buttonCount = 0, --How many buttons? 
+    startPage = 0, --What index is the action page index? 
+    colorProfile = { cR = 0.0, cG = 0.0, cB = 0.0, cA = 0.0 },--coloring info.
+    radius = 100.0, --How big the circle is.
+    animationSpeed = 0.0, --Animation speed for open/close. 
     transparency = 0.0, --Total transparency for whole bar and everything.
     totalScale = 0.0, --Scale whole ringula. making the buttons smaller. 
     autoClose = true --Automatically close when cursor goes far from origin.
