@@ -77,38 +77,50 @@ function RingulaFrame_OnUpdate(elapsed)
     Ringula_UpdatePositions()
 end
 
-function CreateRingulaFrame ()
+function CreateNewButton(buttonName)
+    local button = CreateFrame("CheckButton", buttonName, RingulaFrame, "BonusActionButtonTemplate")
+    -- Hide Hotkey text
+    local hotkey = getglobal(buttonName .. "HotKey")
+    hotkey:Hide()
+    -- Hook individual button callbacks
+    button.oldScriptOnClick = button:GetScript("OnClick")
+    button:SetScript("OnClick", RingulaOnClick)
+    button.oldScriptOnEnter = button:GetScript("OnEnter")
+    button:SetScript("OnEnter", RingulaOnEnter)
 
-    for i = 1, 8 do
-        local buttonName = "Nappula" .. i
-        local button = getglobal(buttonName) 
-        if not button then 
-            button = CreateFrame("CheckButton", buttonName, RingulaFrame, "BonusActionButtonTemplate")
-            -- Hide Hotkey text
-            local hotkey = getglobal(buttonName .. "HotKey")
-            hotkey:Hide()
-            -- Hook individual button callbacks
-            button.oldScriptOnClick = button:GetScript("OnClick")
-            button:SetScript("OnClick", RingulaOnClick)
-            button.oldScriptOnEnter = button:GetScript("OnEnter")
-            button:SetScript("OnEnter", RingulaOnEnter)
-            
-        end
-        button:SetID(1020 + i) -- TODO : WHAT ID...May conflict with other addons.
-        button:SetPoint("CENTER", RingulaFrame, "CENTER", 0, 0)
-        button:SetFrameLevel(2)
-        button.isRingula = true
-        button.isBonus = true
-        button.buttonType = "RINGULA_MENU" --to do: Varmista, mihin tämä liittyy :D--
-       
-        button:Enable()
-        button:Show()
+    return button
+end
 
-        this = button
-       
+-- Basically, search globals if there is a button, if NOT --> Create one.
+function ButtonForId(i)
+    local buttonName = "Nappula" .. i
+    local button = getglobal(buttonName) 
 
+    if not button then 
+        button = CreateNewButton(buttonName)
     end
 
+    return button
+end
+
+function ConfigureButtonWithId(button, i)
+    button:SetID(1020 + i) -- TODO : WHAT ID...May conflict with other addons.
+    button:SetPoint("CENTER", RingulaFrame, "CENTER", 0, 0)
+    button:SetFrameLevel(2)
+    button.isRingula = true
+    button.isBonus = true
+    button.buttonType = "RINGULA_MENU" --to do: Varmista, mihin tämä liittyy :D--
+    button:Enable()
+    button:Show()
+end
+
+function CreateRingulaFrame ()
+    for i = 1, 8 do
+        local button = ButtonForId(i)
+        ConfigureButtonWithId(button, i)
+        this = button
+    end
+    
     Ringula_UpdatePositions()
 end
 
