@@ -1,9 +1,30 @@
 <Bindings>
-	<Binding name="RINGULA_TOGGLE" header="RINGULA" runOnUp="true"> 
+	<Binding name="RINGULA_MENU1" header="RINGULA" runOnUp="true"> 
 		if (keystate == "down") then 
-			RingulaKeyDown ()
+			Ringula:BeginKeyInput ( 1, IsAltKeyDown() or false, IsControlKeyDown() or false, IsShiftKeyDown() or false )
 		else
-			RingulaKeyUp ()
+			Ringula:EndKeyInput ( 1 )
+		end
+	</Binding>
+	<Binding name="RINGULA_MENU2" header="RINGULA" runOnUp="true"> 
+		if (keystate == "down") then 
+			Ringula:BeginKeyInput ( 2, IsAltKeyDown() or false, IsControlKeyDown() or false, IsShiftKeyDown() or false )
+		else
+			Ringula:EndKeyInput ( 2 )
+		end
+	</Binding>
+	<Binding name="RINGULA_MENU3" header="RINGULA" runOnUp="true"> 
+		if (keystate == "down") then 
+			Ringula:BeginKeyInput ( 3, IsAltKeyDown() or false, IsControlKeyDown() or false, IsShiftKeyDown() or false )
+		else
+			Ringula:EndKeyInput ( 3 )
+		end
+	</Binding>
+	<Binding name="RINGULA_MENU4" header="RINGULA" runOnUp="true"> 
+		if (keystate == "down") then 
+			Ringula:BeginKeyInput ( 4, IsAltKeyDown() or false, IsControlKeyDown() or false, IsShiftKeyDown() or false )
+		else
+			Ringula:EndKeyInput ( 4 )
 		end
 	</Binding>
 </Bindings>
