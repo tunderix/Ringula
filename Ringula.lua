@@ -13,8 +13,7 @@ local ringulaMouse_Target = {
 local Ringula_defaultSettings = {
     buttonCount = 8, --How many buttons? 
     colorProfile = { cR = 0.0, cG = 0.0, cB = 0.0, cA = 0.0 },--coloring info.
-	Hotkeys = [], -- For handling Hotkeys by index
-    Buttons = [] -- For handling buttons by index
+	
     -- startPage = 13, --What index is the action page index? 
     -- radius = 100.0, --How big the circle is.
     -- animationSpeed = 0.0, --Animation speed for open/close. 
@@ -202,21 +201,4 @@ end
 
 function Ringula:EndKeyInput( keyIndex )
     CloseRingula()
-end
-
-
-function Ringula:GetButtonByID( index )
-    return RingulaSettings.Buttons[index];
-end
-
-function Ringula:GetKeyByID( index )
-    return RingulaSettings.Hotkeys[index];
-end
-
-function Ringula:GetHotkeyCount()
-    return table.getn( RingulaSettings.Hotkeys );
-end
-
-function Ringula:GetButtonCount()
-    return table.getn( RingulaSettings.Buttons );
 end
