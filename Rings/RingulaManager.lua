@@ -1,4 +1,4 @@
---[[ 
+
 local defaultRings = [
     {
         id = -1,
@@ -30,52 +30,74 @@ local defaultRings = [
         buttonContent = [],
         description = "Ringula by id: 3"
     },
-], -- Handle rings and their buttons and their identifiers.
- ]]
+]; -- Handle rings and their buttons and their identifiers.
 
 
 
 
-RingulaManager = {}
-RingulaManager.__index = RingulaManager
 
-function RingulaManager:create(ringData, defaultActiveRing)
-   local manager = {}             -- our new object
-   setmetatable(manager,RingulaManager)  -- make Account handle lookup
-   manager.rings = ringData
-   manager.activeRing = defaultActiveRing
-   return manager
+RingulaManager = {};
+RingulaManager.__index = RingulaManager;
+
+function RingulaManager:create( ringData, defaultActiveRing )
+   local manager = {};
+
+   setmetatable(manager,RingulaManager);
+   manager.rings = ringData;
+   manager.activeRing = defaultActiveRing; --Int for active ring
+
+   return manager;
 end
 
+--
+-- Ring initialization
+--
+local function RingulaManager:Initialize()
+    RingulaManager:InitializeRings();
+end
+
+local function RingulaManager:InitializeRings()
+    local ringulaRings = [];
+
+    for i=0, table.getn( defaultRings ) do
+        ringulaRings[i] = RingulaManager:InitializeRing( i, defaultRings.hotkey, defaultRings.buttonContent, defaultRings.description );
+    end
+    
+    self.rings = ringulaRings;
+end
+
+local function RingulaManager:InitializeRing(id, hotkey, buttons, description)
+    return RingulaRing:create( ringId, hotkey, buttons, description );
+end
+--
+-- Ring Management
+--
 function RingulaManager:GetRingById(id)
     local rRing = self.rings[-1];
-    if(id < table.getn(self.rings) && id > -1){
+
+    if id < table.getn( self.rings ) and id > -1 then
         rRing = self.rings[id];
-    }
+    end
+
     return rRing;
 end
 
-function Ringula:GetActiveRing()
-    return Ringula:GetRingById(self.activeRing);
+function RingulaManager:GetActiveRing()
+    return RingulaManager:GetRingById( self.activeRing );
 end
 
-
---[[ 
-
-
-function Ringula:GetButtonByID( index )
-    return RingulaSettings.Buttons[index];
+function RingulaManager:RingCount()
+    return table.getn( self.rings );
 end
 
-function Ringula:GetKeyByID( index )
-    return RingulaSettings.Hotkeys[index];
-end
+--Return false when id is NOT VALID
+function RingulaManager:SetActiveRing(id)
+    local success = false;
 
-function Ringula:GetHotkeyCount()
-    return table.getn( RingulaSettings.Hotkeys );
+    if id < RingulaManager:RingCount() and id > 0 then
+        self.activeRing = id;
+        success = true;
+    end
+    
+    return success; 
 end
-
-function Ringula:GetButtonCount()
-    return table.getn( RingulaSettings.Buttons );
-end
- ]]
